@@ -1,0 +1,80 @@
+#!/bin/sh
+
+NETWORK_TYPE=$1
+
+if [ -z $NETWORK_TYPE ]; then
+
+    NETWORK_TYPE='dhcp'
+
+fi
+
+if [ $NETWORK_TYPE == 'dhcp' ]; then
+
+    echo 'Wi-Fi network has been amended to DHCP'
+
+    sudo networksetup -setdhcp Wi-Fi
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+elif [ $NETWORK_TYPE == 'dns' ]; then
+   
+    sudo networksetup -setdnsservers Wi-Fi $2 $3
+
+    echo 'Wifi network dns  has been amended to Manual ' $2 $3
+
+elif [ $NETWORK_TYPE == 'static' ]; then
+
+    sudo networksetup -setmanual Wi-Fi $2 $3 $4 
+
+    echo 'Wifi network has been amended to Manual ' $2 $3 $4
+
+elif [ $NETWORK_TYPE == 'proxy' ]; then
+
+    if [ $2 == 'socks' ]; then
+        
+        networksetup -setautoproxystate "Wi-Fi" off
+
+        networksetup -setsocksfirewallproxy wi-fi localhost 1080
+
+        echo "Wifi network proxy change to socks"
+
+    elif [ $2 == 'pac' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/trojan.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'pac2' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/passwall.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'off' ];then
+        
+        networksetup -setsocksfirewallproxystate wi-fi off
+  
+        networksetup -setautoproxystate "Wi-Fi" off
+    
+        echo "Wifi network proxy turn off"
+
+    else
+
+        echo '        '
+ 
+        echo 'input error,please input socks/pac/pac2/off'
+
+        echo '       ' 
+   fi
+else
+
+    echo '           '
+
+    echo 'input error,please input dhcp/static/dns/proxy'
+
+    echo '           '
+
+fi

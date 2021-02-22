@@ -1,0 +1,5 @@
+#!/bin/bash
+echo ""
+echo "正在获取"$1"的详细信息，请稍等..."
+echo ""
+curl myip.ipip.net/$1

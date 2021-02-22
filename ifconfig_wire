@@ -1,0 +1,65 @@
+#!/bin/sh
+
+NETWORK_TYPE=$1
+
+if [ -z $NETWORK_TYPE ]; then
+
+    NETWORK_TYPE='dhcp'
+
+fi
+
+if [ $NETWORK_TYPE == 'dhcp' ]; then
+
+    echo 'wire network has been amended to DHCP'
+
+    sudo networksetup -setdhcp 'AX88179 USB 3.0 to Gigabit Ethernet'
+
+    sudo networksetup -setdnsservers 'AX88179 USB 3.0 to Gigabit Ethernet' empty
+elif [ $NETWORK_TYPE == 'dns' ]; then
+
+     sudo networksetup -setdnsservers 'AX88179 USB 3.0 to Gigabit Ethernet' $2 $3
+
+     echo 'Wire network dns  has been amended to Manual ' $2 $3
+
+elif [ $NETWORK_TYPE == 'static' ]; then
+
+    sudo networksetup -setmanual 'AX88179 USB 3.0 to Gigabit Ethernet' $2 $3 $4 
+
+    echo 'Wire network has been amended to Manual ' $2 $3 $4
+
+elif [ $NETWORK_TYPE == 'proxy' ]; then
+
+    if [ $2 == 'socks' ]; then
+
+        networksetup -setautoproxystate 'AX88179 USB 3.0 to Gigabit Ethernet' off
+
+        networksetup -setsocksfirewallproxy 'AX88179 USB 3.0 to Gigabit Ethernet' localhost 1080
+
+        echo "Wire network proxy change to socks"
+
+    elif [ $2 == 'pac' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl 'AX88179 USB 3.0 to Gigabit Ethernet' "http://127.0.0.1/trojan.pac"
+
+        echo "Wire network proxy chang to pac"
+
+    elif [ $2 == 'off' ];then
+
+        networksetup -setsocksfirewallproxystate 'AX88179 USB 3.0 to Gigabit Ethernet' off
+
+        networksetup -setautoproxystate 'AX88179 USB 3.0 to Gigabit Ethernet' off
+
+        echo "Wire network proxy turn off"
+    fi
+
+else
+
+    echo '         '
+
+    echo 'input error'
+
+    echo '         '
+
+fi

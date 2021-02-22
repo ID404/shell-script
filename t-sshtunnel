@@ -1,0 +1,22 @@
+#!/bin/sh
+
+
+read -p '输入中转ssh服务器IP： ' ssh_server_ip
+
+read -p '输入中转ssh服务器ssh端口： ' ssh_server_port
+
+read -p '输入中转ssh服务器ssh登陆的用户名: ' ssh_server_username
+
+read -p '输入需要访问的服务器IP： ' server_ip
+
+read -p '输入需要访问的服务器端口： ' server_port
+
+read -p '输入需要转发到本地PC的端口： ' local_port
+
+echo "输入完ssh服务器密码并成功登陆后即可通过访问本地127.0.0.1的 $local_port 端口来访问 $server_ip 的 $server_port 端口"
+
+echo '请输入ssh服务器密码: '
+
+ssh -o TCPKeepAlive=yes -o ServerAliveInterval=60 -L $local_port:$server_ip:$server_port $ssh_server_username@$ssh_server_ip -p $ssh_server_port
+
+
