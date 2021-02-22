@@ -1,1 +1,1 @@
-# Personal Mac shell-script
+# Personal  shell-script
