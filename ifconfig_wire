@@ -1,4 +1,5 @@
 #!/bin/sh
+#networksetup -listallnetworkservices（列出所有的网络服务信息）
 
 NETWORK_TYPE=$1
 
@@ -12,53 +13,87 @@ if [ $NETWORK_TYPE == 'dhcp' ]; then
 
     echo 'wire network has been amended to DHCP'
 
-    sudo networksetup -setdhcp 'AX88179 USB 3.0 to Gigabit Ethernet'
+    sudo networksetup -setdhcp 'Thunderbolt Ethernet'
 
-    sudo networksetup -setdnsservers 'AX88179 USB 3.0 to Gigabit Ethernet' empty
+    sudo networksetup -setdnsservers 'Thunderbolt Ethernet' empty
+
+    sudo networksetup -getinfo 'Thunderbolt Ethernet'
+
 elif [ $NETWORK_TYPE == 'dns' ]; then
 
-     sudo networksetup -setdnsservers 'AX88179 USB 3.0 to Gigabit Ethernet' $2 $3
+     sudo networksetup -setdnsservers 'Thunderbolt Ethernet' $2 $3
 
      echo 'Wire network dns  has been amended to Manual ' $2 $3
 
 elif [ $NETWORK_TYPE == 'static' ]; then
 
-    sudo networksetup -setmanual 'AX88179 USB 3.0 to Gigabit Ethernet' $2 $3 $4 
+    sudo networksetup -setmanual 'Thunderbolt Ethernet' $2 $3 $4
 
     echo 'Wire network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo 'Thunderbolt Ethernet'
+
+elif [ $NETWORK_TYPE == 'add' ]; then
+
+    sudo  networksetup -createnetworkservice "Thunderbolt Ethernet 2" "Thunderbolt Ethernet"
+
+    sudo networksetup -setmanual "Thunderbolt Ethernet 2" $2 $3 $4
+
+    echo 'Thunderbolt Ethernet 2 network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo "Thunderbolt Ethernet 2"
+
+elif [ $NETWORK_TYPE == 'del' ]; then
+
+    sudo networksetup -removenetworkservice "Thunderbolt Ethernet 2"
+
+    echo 'Thunderbolt Ethernet 2 network has been removed'
 
 elif [ $NETWORK_TYPE == 'proxy' ]; then
 
     if [ $2 == 'socks' ]; then
 
-        networksetup -setautoproxystate 'AX88179 USB 3.0 to Gigabit Ethernet' off
+        networksetup -setautoproxystate 'Thunderbolt Ethernet' off
 
-        networksetup -setsocksfirewallproxy 'AX88179 USB 3.0 to Gigabit Ethernet' localhost 1080
+        networksetup -setsocksfirewallproxy 'Thunderbolt Ethernet' localhost 1080
 
         echo "Wire network proxy change to socks"
 
     elif [ $2 == 'pac' ]; then
 
-        networksetup -setsocksfirewallproxystate wi-fi off
+        networksetup -setsocksfirewallproxystate 'Thunderbolt Ethernet' off
 
-        networksetup -setautoproxyurl 'AX88179 USB 3.0 to Gigabit Ethernet' "http://127.0.0.1/trojan.pac"
+        networksetup -setautoproxyurl 'Thunderbolt Ethernet' "http://127.0.0.1/trojan.pac"
 
         echo "Wire network proxy chang to pac"
 
     elif [ $2 == 'off' ];then
 
-        networksetup -setsocksfirewallproxystate 'AX88179 USB 3.0 to Gigabit Ethernet' off
+        networksetup -setsocksfirewallproxystate 'Thunderbolt Ethernet' off
 
-        networksetup -setautoproxystate 'AX88179 USB 3.0 to Gigabit Ethernet' off
+        networksetup -setautoproxystate 'Thunderbolt Ethernet' off
 
         echo "Wire network proxy turn off"
     fi
+
+elif [ $NETWORK_TYPE == 'help' ] || [ $NETWORK_TYPE == 'h' ]; then
+
+    echo "ifconfig_wire dhcp"
+    echo "ifconfig_wire dns DNS_server1 DNS_server2"
+    echo "ifconfig_wire static IP Netmask Gateway"
+    echo "ifconfig_wire add  --Add wire2 interface"
+    echo "ifconfig_wire del  --Del wire2 interface"
+    echo "ifconfig_wire dnsempty --Delete dns which set manual Set DNS from DHCP"
+    echo "ifconfig_wire proxy socks"
+    echo "ifconfig_wifi proxy pac"
+    echo "ifconfig_wire proxy pac2"
+    echo "ifconfig_wire proxy off"
 
 else
 
     echo '         '
 
-    echo 'input error'
+    echo 'input error,please input dhcp/static/add/del/dns/dnsempty/proxy/help/h'
 
     echo '         '
 
