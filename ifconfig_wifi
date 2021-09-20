@@ -1,4 +1,5 @@
 #!/bin/sh
+# more information enter "networksetup help" in command line
 
 NETWORK_TYPE=$1
 
@@ -15,22 +16,474 @@ if [ $NETWORK_TYPE == 'dhcp' ]; then
     sudo networksetup -setdhcp Wi-Fi
 
     sudo networksetup -setdnsservers Wi-Fi empty
+
+    sudo networksetup -getinfo Wi-Fi
+
 elif [ $NETWORK_TYPE == 'dns' ]; then
-   
+
     sudo networksetup -setdnsservers Wi-Fi $2 $3
 
     echo 'Wifi network dns  has been amended to Manual ' $2 $3
 
+elif [ $NETWORK_TYPE == 'add' ]; then
+
+    sudo  networksetup -createnetworkservice "Wi-Fi 2" Wi-Fi
+
+    sudo networksetup -setmanual "Wi-Fi 2" $2 $3 $4
+
+    echo 'Wifi 2 network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo "Wi-Fi 2"
+
+elif [ $NETWORK_TYPE == 'del' ]; then
+
+    sudo networksetup -removenetworkservice "Wi-Fi 2"
+
+    echo 'wifi 2 network has been removed'
+
+elif [ $NETWORK_TYPE == 'dnsempty' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    echo 'dns set to dhcp'
+
 elif [ $NETWORK_TYPE == 'static' ]; then
 
-    sudo networksetup -setmanual Wi-Fi $2 $3 $4 
+    sudo networksetup -setmanual Wi-Fi $2 $3 $4
 
     echo 'Wifi network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo Wi-Fi
 
 elif [ $NETWORK_TYPE == 'proxy' ]; then
 
     if [ $2 == 'socks' ]; then
-        
+
+        networksetup -setautoproxystate "Wi-Fi" off
+
+
+    echo 'wifi 2 network has been removed'
+
+elif [ $NETWORK_TYPE == 'dnsempty' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    echo 'dns set to dhcp'
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/trojan.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'pac2' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/passwall.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'off' ];then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxystate "Wi-Fi" off
+
+        echo "Wifi network proxy turn off"
+
+    else
+
+        echo '        '
+
+        echo 'input error,please input socks/pac/pac2/off'
+
+        echo '       '
+   fi
+elif [ $NETWORK_TYPE == 'help' ]; then
+
+    echo "ifconfig_wifi dhcp -set wifi ip address dhcp"
+    echo "ifconfig_wifi static
+
+else
+
+    echo '           '
+
+    echo 'input error,please input dhcp/static/add/del/dns/dnsempty/proxy'
+
+    echo '           '
+
+fi
+-- INSERT --
+
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/trojan.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'pac2' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/passwall.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'off' ];then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxystate "Wi-Fi" off
+
+        echo "Wifi network proxy turn off"
+
+    else
+
+        echo '        '
+
+        echo 'input error,please input socks/pac/pac2/off'
+
+        echo '       '
+   fi
+elif [ $NETWORK_TYPE == 'help' ]; then
+
+    echo "ifconfig_wifi dhcp -set wifi ip address dhcp"
+    echo "ifconfig_wifi static
+
+else
+
+    echo '           '
+
+    echo 'input error,please input dhcp/static/add/del/dns/dnsempty/proxy'
+
+    echo '           '
+
+fi
+-- INSERT --
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/trojan.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'pac2' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/passwall.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'off' ];then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxystate "Wi-Fi" off
+
+        echo "Wifi network proxy turn off"
+
+    else
+
+        echo '        '
+
+        echo 'input error,please input socks/pac/pac2/off'
+
+        echo '       '
+   fi
+elif [ $NETWORK_TYPE == 'help' ]; then
+
+    echo "ifconfig_wifi dhcp -set wifi ip address dhcp"
+    echo "ifconfig_wifi static
+
+else
+
+    echo '           '
+
+    echo 'input error,please input dhcp/static/add/del/dns/dnsempty/proxy'
+
+    echo '           '
+
+fi
+-- INSERT --
+
+#!/bin/sh
+# more information enter "networksetup help" in command line
+
+NETWORK_TYPE=$1
+
+if [ -z $NETWORK_TYPE ]; then
+
+    NETWORK_TYPE='dhcp'
+
+fi
+
+if [ $NETWORK_TYPE == 'dhcp' ]; then
+
+    echo 'Wi-Fi network has been amended to DHCP'
+
+    sudo networksetup -setdhcp Wi-Fi
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    sudo networksetup -getinfo Wi-Fi
+
+elif [ $NETWORK_TYPE == 'dns' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi $2 $3
+
+    echo 'Wifi network dns  has been amended to Manual ' $2 $3
+
+elif [ $NETWORK_TYPE == 'add' ]; then
+
+    sudo  networksetup -createnetworkservice "Wi-Fi 2" Wi-Fi
+
+    sudo networksetup -setmanual "Wi-Fi 2" $2 $3 $4
+
+    echo 'Wifi 2 network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo "Wi-Fi 2"
+
+elif [ $NETWORK_TYPE == 'del' ]; then
+
+    sudo networksetup -removenetworkservice "Wi-Fi 2"
+
+    echo 'wifi 2 network has been removed'
+
+elif [ $NETWORK_TYPE == 'dnsempty' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    echo 'dns set to dhcp'
+
+elif [ $NETWORK_TYPE == 'static' ]; then
+
+    sudo networksetup -setmanual Wi-Fi $2 $3 $4
+
+    echo 'Wifi network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo Wi-Fi
+
+elif [ $NETWORK_TYPE == 'proxy' ]; then
+
+    if [ $2 == 'socks' ]; then
+
+        networksetup -setautoproxystate "Wi-Fi" off
+
+        networksetup -setsocksfirewallproxy wi-fi localhost 1080
+
+        echo "Wifi network proxy change to socks"
+
+    elif [ $2 == 'pac' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+#!/bin/sh
+# more information enter "networksetup help" in command line
+
+NETWORK_TYPE=$1
+
+if [ -z $NETWORK_TYPE ]; then
+
+    NETWORK_TYPE='dhcp'
+
+fi
+
+if [ $NETWORK_TYPE == 'dhcp' ]; then
+
+    echo 'Wi-Fi network has been amended to DHCP'
+
+    sudo networksetup -setdhcp Wi-Fi
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    sudo networksetup -getinfo Wi-Fi
+
+elif [ $NETWORK_TYPE == 'dns' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi $2 $3
+
+    echo 'Wifi network dns  has been amended to Manual ' $2 $3
+
+elif [ $NETWORK_TYPE == 'add' ]; then
+
+    sudo  networksetup -createnetworkservice "Wi-Fi 2" Wi-Fi
+
+    sudo networksetup -setmanual "Wi-Fi 2" $2 $3 $4
+
+    echo 'Wifi 2 network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo "Wi-Fi 2"
+
+elif [ $NETWORK_TYPE == 'del' ]; then
+
+    sudo networksetup -removenetworkservice "Wi-Fi 2"
+
+    echo 'wifi 2 network has been removed'
+
+elif [ $NETWORK_TYPE == 'dnsempty' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    echo 'dns set to dhcp'
+
+elif [ $NETWORK_TYPE == 'static' ]; then
+
+    sudo networksetup -setmanual Wi-Fi $2 $3 $4
+
+    echo 'Wifi network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo Wi-Fi
+
+elif [ $NETWORK_TYPE == 'proxy' ]; then
+
+    if [ $2 == 'socks' ]; then
+
+        networksetup -setautoproxystate "Wi-Fi" off
+
+        networksetup -setsocksfirewallproxy wi-fi localhost 1080
+
+        echo "Wifi network proxy change to socks"
+
+    elif [ $2 == 'pac' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/trojan.pac"
+
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'pac2' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+elif [ $NETWORK_TYPE == 'static' ]; then
+
+    sudo networksetup -setmanual Wi-Fi $2 $3 $4
+
+    echo 'Wifi network has been amended to Manual ' $2 $3 $4
+
+apple at DEUDIF in ~
+○ vi /usr/local/bin/ifconfig_wifi
+
+apple at DEUDIF in ~
+○
+
+apple at DEUDIF in ~
+○
+
+apple at DEUDIF in ~
+○
+
+apple at DEUDIF in ~
+○ ifconfig_wifi help
+ifconfig_wifi dhcp
+ifconfig_wifi dns DNS_server1 DNS_server2
+ifconfig_wifi static IP Netmask Gateway
+ifconfig_wifi add  --Add Wi-Fi2 interface
+ifconfig_wifi del  --Del Wi-Fi2 interface
+ifconfig_wifi dnsempty --Delete dns which set manual Set DNS from DHCP
+ifconfig_wifi proxy socks
+ifocnfig_wifi proxy pac
+ifconfig_wifi proxy pac2
+ifconfig_wifi proxy off
+
+apple at DEUDIF in ~
+○ vi /usr/local/bin/ifconfig_wifi
+
+apple at DEUDIF in ~
+○ ifconfig_wifi h
+ifconfig_wifi dhcp
+ifconfig_wifi dns DNS_server1 DNS_server2
+ifconfig_wifi static IP Netmask Gateway
+ifconfig_wifi add  --Add Wi-Fi2 interface
+ifconfig_wifi del  --Del Wi-Fi2 interface
+ifconfig_wifi dnsempty --Delete dns which set manual Set DNS from DHCP
+ifconfig_wifi proxy socks
+ifocnfig_wifi proxy pac
+ifconfig_wifi proxy pac2
+ifconfig_wifi proxy off
+
+apple at DEUDIF in ~
+○ ifconfig_wifi help
+ifconfig_wifi dhcp
+ifconfig_wifi dns DNS_server1 DNS_server2
+ifconfig_wifi static IP Netmask Gateway
+ifconfig_wifi add  --Add Wi-Fi2 interface
+ifconfig_wifi del  --Del Wi-Fi2 interface
+ifconfig_wifi dnsempty --Delete dns which set manual Set DNS from DHCP
+ifconfig_wifi proxy socks
+ifocnfig_wifi proxy pac
+ifconfig_wifi proxy pac2
+ifconfig_wifi proxy off
+
+apple at DEUDIF in ~
+○
+
+apple at DEUDIF in ~
+○
+
+apple at DEUDIF in ~
+○ cat /usr/local/bin/ifconfig_wifi
+#!/bin/sh
+# more information enter "networksetup help" in command line
+
+NETWORK_TYPE=$1
+
+if [ -z $NETWORK_TYPE ]; then
+
+    NETWORK_TYPE='dhcp'
+
+fi
+
+if [ $NETWORK_TYPE == 'dhcp' ]; then
+
+    echo 'Wi-Fi network has been amended to DHCP'
+
+    sudo networksetup -setdhcp Wi-Fi
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    sudo networksetup -getinfo Wi-Fi
+
+elif [ $NETWORK_TYPE == 'dns' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi $2 $3
+
+    echo 'Wifi network dns  has been amended to Manual ' $2 $3
+
+elif [ $NETWORK_TYPE == 'add' ]; then
+
+    sudo  networksetup -createnetworkservice "Wi-Fi 2" Wi-Fi
+
+    sudo networksetup -setmanual "Wi-Fi 2" $2 $3 $4
+
+    echo 'Wifi 2 network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo "Wi-Fi 2"
+
+elif [ $NETWORK_TYPE == 'del' ]; then
+
+    sudo networksetup -removenetworkservice "Wi-Fi 2"
+
+    echo 'wifi 2 network has been removed'
+
+elif [ $NETWORK_TYPE == 'dnsempty' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    echo 'dns set to dhcp'
+
+elif [ $NETWORK_TYPE == 'static' ]; then
+
+    sudo networksetup -setmanual Wi-Fi $2 $3 $4
+
+    echo 'Wifi network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo Wi-Fi
+
+elif [ $NETWORK_TYPE == 'proxy' ]; then
+
+    if [ $2 == 'socks' ]; then
+
         networksetup -setautoproxystate "Wi-Fi" off
 
         networksetup -setsocksfirewallproxy wi-fi localhost 1080
@@ -54,26 +507,39 @@ elif [ $NETWORK_TYPE == 'proxy' ]; then
         echo "Wifi network proxy chang to pac"
 
     elif [ $2 == 'off' ];then
-        
+
         networksetup -setsocksfirewallproxystate wi-fi off
-  
+
         networksetup -setautoproxystate "Wi-Fi" off
-    
+
         echo "Wifi network proxy turn off"
 
     else
 
         echo '        '
- 
+
         echo 'input error,please input socks/pac/pac2/off'
 
-        echo '       ' 
+        echo '       '
    fi
+elif [ $NETWORK_TYPE == 'help' ] || [ $NETWORK_TYPE == 'h' ]; then
+
+    echo "ifconfig_wifi dhcp"
+    echo "ifconfig_wifi dns DNS_server1 DNS_server2"
+    echo "ifconfig_wifi static IP Netmask Gateway"
+    echo "ifconfig_wifi add  --Add Wi-Fi2 interface"
+    echo "ifconfig_wifi del  --Del Wi-Fi2 interface"
+    echo "ifconfig_wifi dnsempty --Delete dns which set manual Set DNS from DHCP"
+    echo "ifconfig_wifi proxy socks"
+    echo "ifocnfig_wifi proxy pac"
+    echo "ifconfig_wifi proxy pac2"
+    echo "ifconfig_wifi proxy off"
+
 else
 
     echo '           '
 
-    echo 'input error,please input dhcp/static/dns/proxy'
+    echo 'input error,please input dhcp/static/add/del/dns/dnsempty/proxy'
 
     echo '           '
 
