@@ -114,7 +114,7 @@ else
 
     echo '           '
 
-    echo 'input error,please input dhcp/static/add/del/dns/dnsempty/proxy'
+    echo 'input error,please input dhcp/static/add/del/dns/dnsempty/proxy/help/h'
 
     echo '           '
 
