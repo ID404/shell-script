@@ -1,5 +1,5 @@
 #!/bin/sh
-#networksetup -listallnetworkservices（列出所有的网络服务信息）
+# more information enter "networksetup help" in command line
 
 NETWORK_TYPE=$1
 
@@ -11,90 +11,111 @@ fi
 
 if [ $NETWORK_TYPE == 'dhcp' ]; then
 
-    echo 'wire network has been amended to DHCP'
+    echo 'Wi-Fi network has been amended to DHCP'
 
-    sudo networksetup -setdhcp 'Thunderbolt Ethernet'
+    sudo networksetup -setdhcp Wi-Fi
 
-    sudo networksetup -setdnsservers 'Thunderbolt Ethernet' empty
+    sudo networksetup -setdnsservers Wi-Fi empty
 
-    sudo networksetup -getinfo 'Thunderbolt Ethernet'
+    sudo networksetup -getinfo Wi-Fi
 
 elif [ $NETWORK_TYPE == 'dns' ]; then
 
-     sudo networksetup -setdnsservers 'Thunderbolt Ethernet' $2 $3
+    sudo networksetup -setdnsservers Wi-Fi $2 $3
 
-     echo 'Wire network dns  has been amended to Manual ' $2 $3
-
-elif [ $NETWORK_TYPE == 'static' ]; then
-
-    sudo networksetup -setmanual 'Thunderbolt Ethernet' $2 $3 $4
-
-    echo 'Wire network has been amended to Manual ' $2 $3 $4
-
-    sudo networksetup -getinfo 'Thunderbolt Ethernet'
+    echo 'Wifi network dns  has been amended to Manual ' $2 $3
 
 elif [ $NETWORK_TYPE == 'add' ]; then
 
-    sudo  networksetup -createnetworkservice "Thunderbolt Ethernet 2" "Thunderbolt Ethernet"
+    sudo  networksetup -createnetworkservice "Wi-Fi 2" Wi-Fi
 
-    sudo networksetup -setmanual "Thunderbolt Ethernet 2" $2 $3 $4
+    sudo networksetup -setmanual "Wi-Fi 2" $2 $3 $4
 
-    echo 'Thunderbolt Ethernet 2 network has been amended to Manual ' $2 $3 $4
+    echo 'Wifi 2 network has been amended to Manual ' $2 $3 $4
 
-    sudo networksetup -getinfo "Thunderbolt Ethernet 2"
+    sudo networksetup -getinfo "Wi-Fi 2"
 
 elif [ $NETWORK_TYPE == 'del' ]; then
 
-    sudo networksetup -removenetworkservice "Thunderbolt Ethernet 2"
+    sudo networksetup -removenetworkservice "Wi-Fi 2"
 
-    echo 'Thunderbolt Ethernet 2 network has been removed'
+    echo 'wifi 2 network has been removed'
+
+elif [ $NETWORK_TYPE == 'dnsempty' ]; then
+
+    sudo networksetup -setdnsservers Wi-Fi empty
+
+    echo 'dns set to dhcp'
+
+elif [ $NETWORK_TYPE == 'static' ]; then
+
+    sudo networksetup -setmanual Wi-Fi $2 $3 $4
+
+    echo 'Wifi network has been amended to Manual ' $2 $3 $4
+
+    sudo networksetup -getinfo Wi-Fi
 
 elif [ $NETWORK_TYPE == 'proxy' ]; then
 
     if [ $2 == 'socks' ]; then
 
-        networksetup -setautoproxystate 'Thunderbolt Ethernet' off
+        networksetup -setautoproxystate "Wi-Fi" off
 
-        networksetup -setsocksfirewallproxy 'Thunderbolt Ethernet' localhost 1080
+        networksetup -setsocksfirewallproxy wi-fi localhost 1080
 
-        echo "Wire network proxy change to socks"
+        echo "Wifi network proxy change to socks"
 
     elif [ $2 == 'pac' ]; then
 
-        networksetup -setsocksfirewallproxystate 'Thunderbolt Ethernet' off
+        networksetup -setsocksfirewallproxystate wi-fi off
 
-        networksetup -setautoproxyurl 'Thunderbolt Ethernet' "http://127.0.0.1/trojan.pac"
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/trojan.pac"
 
-        echo "Wire network proxy chang to pac"
+        echo "Wifi network proxy chang to pac"
+
+    elif [ $2 == 'pac2' ]; then
+
+        networksetup -setsocksfirewallproxystate wi-fi off
+
+        networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1/passwall.pac"
+
+        echo "Wifi network proxy chang to pac"
 
     elif [ $2 == 'off' ];then
 
-        networksetup -setsocksfirewallproxystate 'Thunderbolt Ethernet' off
+        networksetup -setsocksfirewallproxystate wi-fi off
 
-        networksetup -setautoproxystate 'Thunderbolt Ethernet' off
+        networksetup -setautoproxystate "Wi-Fi" off
 
-        echo "Wire network proxy turn off"
-    fi
+        echo "Wifi network proxy turn off"
 
+    else
+
+        echo '        '
+
+        echo 'input error,please input socks/pac/pac2/off'
+
+        echo '       '
+   fi
 elif [ $NETWORK_TYPE == 'help' ] || [ $NETWORK_TYPE == 'h' ]; then
 
-    echo "ifconfig_wire dhcp"
-    echo "ifconfig_wire dns DNS_server1 DNS_server2"
-    echo "ifconfig_wire static IP Netmask Gateway"
-    echo "ifconfig_wire add  --Add wire2 interface"
-    echo "ifconfig_wire del  --Del wire2 interface"
-    echo "ifconfig_wire dnsempty --Delete dns which set manual Set DNS from DHCP"
-    echo "ifconfig_wire proxy socks"
-    echo "ifconfig_wifi proxy pac"
-    echo "ifconfig_wire proxy pac2"
-    echo "ifconfig_wire proxy off"
+    echo "ifconfig_wifi dhcp"
+    echo "ifconfig_wifi dns DNS_server1 DNS_server2"
+    echo "ifconfig_wifi static IP Netmask Gateway"
+    echo "ifconfig_wifi add  --Add Wi-Fi2 interface"
+    echo "ifconfig_wifi del  --Del Wi-Fi2 interface"
+    echo "ifconfig_wifi dnsempty --Delete dns which set manual Set DNS from DHCP"
+    echo "ifconfig_wifi proxy socks"
+    echo "ifocnfig_wifi proxy pac"
+    echo "ifconfig_wifi proxy pac2"
+    echo "ifconfig_wifi proxy off"
 
 else
 
-    echo '         '
+    echo '           '
 
     echo 'input error,please input dhcp/static/add/del/dns/dnsempty/proxy/help/h'
 
-    echo '         '
+    echo '           '
 
 fi
