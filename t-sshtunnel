@@ -1,22 +1,49 @@
 #!/bin/sh
 
 
-read -p '输入中转ssh服务器IP： ' ssh_server_ip
+sshtunnel(){
+echo "请选择ssh 隧道模式:"
+echo "1.远程端口转发至本地"
+echo "2.动态端口转发至本地"
+echo "3.终止动态端口转发的进程"
+read -p "请输入：" ssh_mode
+echo ""
 
-read -p '输入中转ssh服务器ssh端口： ' ssh_server_port
+if [ $ssh_mode == 1 ]
+then
+  echo "ssh 隧道模式已选择为远程端口转发至本地"
+  read -p '输入中转ssh服务器IP： ' ssh_server_ip
+  read -p '输入中转ssh服务器ssh端口： ' ssh_server_port
+  read -p '输入中转ssh服务器ssh登陆的用户名: ' ssh_server_username
+  read -p '输入需要访问的服务器IP： ' server_ip
+  read -p '输入需要访问的服务器端口： ' server_port
+  read -p '输入需要转发到本地PC的端口： ' local_port
+  echo "输入完ssh服务器密码并成功登陆后即可通过访问本地127.0.0.1的 $local_port 端口来访问 $server_ip 的 $server_port 端口"
+  echo '请输入ssh服务器密码: '
+  ssh -o TCPKeepAlive=yes -o ServerAliveInterval=60 -L $local_port:$server_ip:$server_port -N -f $ssh_server_username@$ssh_server_ip -p $ssh_server_port
+elif [ $ssh_mode == 2 ]
+then
+  read -p '输入中转ssh服务器IP或域名： ' ssh_server_ip
+  read -p '输入中转ssh服务器ssh端口： ' ssh_server_port
+  read -p '输入中转ssh服务器ssh登陆的用户名: ' ssh_server_username
+  read -p '输入需要转发到本地PC的端口(ex.9091)： ' local_port
+  echo "输入完ssh服务器密码并成功登陆后即可通过访问本地127.0.0.1的 $local_port 端口来通过服务器代理流量"
+  echo '请输入ssh服务器密码: '
+  ssh -o TCPKeepAlive=yes -o ServerAliveInterval=60 -D $local_port  -N -f $ssh_server_username@$ssh_server_ip -p $ssh_server_port
+elif [ $ssh_mode == 3 ]
+then
+  echo "详细进程:"
+  ps -ef | grep ssh | grep "D" | grep "N" | grep "f"
+  echo "正在终止动态端口转发的ssh进程"
+  ps -ef | grep ssh | grep "D" | grep "N" | grep "f" | awk '{ print $2}' |xargs kill -9
+  echo "动态端口转发的ssh进程已终止,退出程序"
+else
+  echo "输入有误!!!,请重新输入"
+  echo ""
+  sshtunnel
+  exit
+fi
+}
 
-read -p '输入中转ssh服务器ssh登陆的用户名: ' ssh_server_username
-
-read -p '输入需要访问的服务器IP： ' server_ip
-
-read -p '输入需要访问的服务器端口： ' server_port
-
-read -p '输入需要转发到本地PC的端口： ' local_port
-
-echo "输入完ssh服务器密码并成功登陆后即可通过访问本地127.0.0.1的 $local_port 端口来访问 $server_ip 的 $server_port 端口"
-
-echo '请输入ssh服务器密码: '
-
-ssh -o TCPKeepAlive=yes -o ServerAliveInterval=60 -L $local_port:$server_ip:$server_port $ssh_server_username@$ssh_server_ip -p $ssh_server_port
-
-
+sshtunnel
+exit
