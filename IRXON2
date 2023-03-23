@@ -1,1 +1,44 @@
-screen /dev/tty.irxon-DevB 9600
+#!/bin/sh
+option=$1
+
+if [ -z $option ]; then
+
+    option='-c'
+
+fi
+
+#read -p '是否重置蓝牙服务,请确保没有其它蓝牙设备在连接(y/n): ' option
+
+
+if [ $option == '-b' ] ;then
+    echo "正在重置蓝牙服务,所有蓝牙设备将会断开"
+    sudo pkill bluetoothd
+    echo "蓝牙服务重置完毕，正在连接蓝牙console线"
+    echo "请等待12秒，12秒后自动连接"
+    echo "若连接失败,请手动输入命令screen -R IRXON  /dev/cu.irxon 9600"
+
+    WAIT=12
+    while [ $WAIT -gt 0 ]
+    do
+      echo "wait $WAIT s to reconnect..."
+      WAIT=$[WAIT-1]
+      sleep 1
+    done
+
+    screen -R IRXON  /dev/cu.irxon 9600
+
+elif [ $option == '-c' ]; then
+    echo "不重置蓝牙服务，准备连接蓝牙console线"
+    screen -R IRXON  /dev/cu.irxon 9600
+
+elif [ $option == '-r' ]; then
+    echo "正在回到screen -r IRXON"
+    sleep 2
+    screen -r IRXON
+
+else
+    echo " -b 重置蓝牙服务并连接蓝牙console"
+    echo " -c 不重置蓝牙服务直接连接蓝牙console"
+    echo " -r 回到已连接的蓝牙console"
+    echo " -h/help  帮助"
+fi
