@@ -1,9 +1,9 @@
 #!/bin/bash
 #使用shell脚本分析nginx日志文件中访问ip的地理位置
 
-# Check if a filename is provided as an argument
+# 检查是否提供日志文件
 if [ -z "$1" ]; then
-  echo "Usage: $0 <filename>"
+  echo "使用: $0 文件名"
   exit 1
 fi
 
@@ -41,10 +41,7 @@ do
       sleep 1
     fi
   done
-
-
-  sleep 2
-  echo "$location"
+  
   echo "$line $location" >> ip_location.txt
 
   location=""
