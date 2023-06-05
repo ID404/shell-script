@@ -34,7 +34,11 @@ do
   location=""
 
   while [[ -z $location ]]; do
-    location=$(curl cip.cc/$ip_source | grep '数据二' | cut -d ':' -f 2 | sed 's/^[ \t]*//;s/[ \t]*$//')
+
+    #方式一，通过nali获取归属地，服务器需提前安装好nali，更新数据库需连网下载，参考https://github.com/zu1k/nali 
+    location=$(nali $ip_source | awk '{ $1=""; print $0 }')
+    #方式二，通过cip.cc/ip获取归属地，需可联网访问cip.cc  
+    #location=$(curl cip.cc/$ip_source | grep '数据二' | cut -d ':' -f 2 | sed 's/^[ \t]*//;s/[ \t]*$//')
 
     if [[ -z $location ]]; then
       echo "Waiting for a result..."
