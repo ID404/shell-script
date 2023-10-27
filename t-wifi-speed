@@ -1,0 +1,10 @@
+#!/bin/bash
+
+interface=$(networksetup -listallhardwareports | grep -A 1 Wi-Fi | awk '/Device/{ print $2 }')
+
+while true; do
+    speed=$(airport -I | awk '/lastTxRate/ {print substr($0, index($0, $2))}' | awk -F '.' '{print $1}')
+    current_time=$(date +"%Y-%m-%d %H:%M:%S")
+    echo "${current_time} - 当前 WiFi 速率为：${speed} Mbps"
+    sleep 1
+done
