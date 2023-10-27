@@ -5,6 +5,23 @@ interface=$(networksetup -listallhardwareports | grep -A 1 Wi-Fi | awk '/Device/
 while true; do
     speed=$(airport -I | awk '/lastTxRate/ {print substr($0, index($0, $2))}' | awk -F '.' '{print $1}')
     current_time=$(date +"%Y-%m-%d %H:%M:%S")
-    echo "${current_time} - 当前 WiFi 速率为：${speed} Mbps"
+    RSSI=$(airport -I | grep agrCtlRSSI |  awk -F'[:,]' '{print $2}')
+    noise=$(airport -I | grep agrCtlNoise |  awk -F'[:,]' '{print $2}')
+    output=$(airport -I | grep channel)
+    channel=$(echo $output | awk -F'[:,]' '{print $2}')
+    width=$(echo $output | awk -F'[:,]' '{print $3}')
+    if [ $channel -lt 13 ]; then
+      width=$((width * 20))
+    else
+      width=$((width * 40))
+    fi
+
+    if [ $width -eq 0 ]; then
+      echo "${current_time} - 当前 WiFi 速率为：${speed} Mbps,  信道为$channel ,获取频宽失败 , RSSI值为$RSSI dBm ,噪声值为$noise dBm"
+    else
+      echo "${current_time} - 当前 WiFi 速率为：${speed} Mbps,  信道为$channel ,频宽为$width MHz , RSSI值为$RSSI dBm ,噪声值为$noise dBm"
+    fi
+
+
     sleep 1
 done
