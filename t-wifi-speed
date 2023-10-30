@@ -10,11 +10,15 @@ while true; do
     output=$(airport -I | grep channel)
     channel=$(echo $output | awk -F'[:,]' '{print $2}')
     width=$(echo $output | awk -F'[:,]' '{print $3}')
-    #if [ $channel -lt 13 ]; then
-    #  width=$((width * 20))
-    #else
-    #  width=$((width * 40))
-    #fi
+
+    case $width in
+        1)
+            width=$((width * 40))
+            ;;
+        *)                 #默认动作
+            ;;
+    esac
+
 
     if [ -z "$width" ] || [ "$width" -lt 20 ]; then
       echo "${current_time} - 当前 WiFi 速率为：${speed} Mbps,  信道为$channel ,获取频宽失败 , RSSI值为$RSSI dBm ,噪声值为$noise dBm"
