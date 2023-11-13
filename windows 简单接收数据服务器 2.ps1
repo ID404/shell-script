@@ -8,47 +8,44 @@ Write-Host "按任意键继续执行程序..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
 
-# 监听端口
 $port = Read-Host -Prompt "请输入监听的TCP端口"
 Write-Host "当前监听接口为TCP $port"
 
-# 获取本机IPv4地址
 $ipAddresses = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notlike 'Loopback*' }).IPAddress
 Write-Host "当前电脑的 IP 地址是：$ipAddresses"
 
-# 创建 TcpListener 对象并开始监听
 $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Any, $port)
 $listener.Start()
 
-# 等待客户端连接
 Write-Host "等待客户端连接..."
 
 try {
     while ($true) {
-        # 接受客户端连接并获取客户端的网络流对象
         $client = $listener.AcceptTcpClient()
         $stream = $client.GetStream()
-
-        # 获取客户端的 IP 地址
         $clientIP = $client.Client.RemoteEndPoint.Address
         Write-Host "客户端 $clientIP 连接成功"
 
-        # 循环接收客户端发送的数据
         while ($true) {
-            # 接收客户端发送的数据
             $bufferSize = 1024
             $buffer = New-Object byte[] $bufferSize
             $bytesRead = $stream.Read($buffer, 0, $bufferSize)
+
+            if ($bytesRead -eq 0 -or $client.Client.Connected -eq $false) {
+                # 连接断开，退出循环
+                $client.Close()
+                Write-Host "客户端 $clientIP 连接已断开"
+                break
+            }
+
             $data = [System.Text.Encoding]::ASCII.GetString($buffer, 0, $bytesRead)
             Write-Host "接收到客户端发送的数据：$data"
 
-            # 回复客户端
-            $response = "已接收到数据：$data"
+            $response = "   date have been received: $data`r`n"
             $responseBuffer = [System.Text.Encoding]::ASCII.GetBytes($response)
             $stream.Write($responseBuffer, 0, $responseBuffer.Length)
             $stream.Flush()
 
-            # 如果客户端发送的数据为 "exit" 或 "quit"，则断开客户端连接
             if ($data.ToLower().Trim() -eq "exit" -or $data.ToLower().Trim() -eq "quit") {
                 $client.Close()
                 Write-Host "客户端 $clientIP 连接已断开"
@@ -58,7 +55,6 @@ try {
     }
 }
 finally {
-    # 关闭监听器和流
     $listener.Stop()
     $stream.Dispose()
     $client.Close()
