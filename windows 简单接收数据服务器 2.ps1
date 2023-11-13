@@ -1,66 +1,66 @@
-Write-Host "ÕâÊÇÒ»¸ö¼òµ¥µÄ TCP ·şÎñÆ÷£¬ÓÃÓÚ¼àÌıÖ¸¶¨µÄ¶Ë¿Ú£¬²¢½ÓÊÕÀ´×Ô¿Í»§¶ËµÄÊı¾İ¡£"
-Write-Host "¿Í»§¶ËÇëÊ¹ÓÃtelnet IP + ¶Ë¿ÚµÄ·½Ê½Á¬½ÓÖÁ·şÎñÆ÷"
-Write-Host "Ä¿Ç°Í¬Ê±Ö»Ö§³Öµ¥¸ö¿Í»§¶Ë£¬ÇëÎğÁ¬½Ó¶à¸ö¿Í»§¶Ë£¬»áµ¼ÖÂ³ÌĞòÔËĞĞÒì³£"
-Write-Host "×÷Õß£ºID404"
-Write-Host "°æ±¾£º1.0"
+Write-Host "è¿™æ˜¯ä¸€ä¸ªç®€å•çš„ TCP æœåŠ¡å™¨ï¼Œç”¨äºç›‘å¬æŒ‡å®šçš„ç«¯å£ï¼Œå¹¶æ¥æ”¶æ¥è‡ªå®¢æˆ·ç«¯çš„æ•°æ®ã€‚"
+Write-Host "å®¢æˆ·ç«¯è¯·ä½¿ç”¨telnet IP + ç«¯å£çš„æ–¹å¼è¿æ¥è‡³æœåŠ¡å™¨"
+Write-Host "ç›®å‰åŒæ—¶åªæ”¯æŒå•ä¸ªå®¢æˆ·ç«¯ï¼Œè¯·å‹¿è¿æ¥å¤šä¸ªå®¢æˆ·ç«¯ï¼Œä¼šå¯¼è‡´ç¨‹åºè¿è¡Œå¼‚å¸¸"
+Write-Host "ä½œè€…ï¼šID404"
+Write-Host "ç‰ˆæœ¬ï¼š1.0"
 Write-Host ""
-Write-Host "°´ÈÎÒâ¼ü¼ÌĞøÖ´ĞĞ³ÌĞò..."
+Write-Host "æŒ‰ä»»æ„é”®ç»§ç»­æ‰§è¡Œç¨‹åº..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
 
-# ¼àÌı¶Ë¿Ú
-$port = Read-Host -Prompt "ÇëÊäÈë¼àÌıµÄTCP¶Ë¿Ú"
-Write-Host "µ±Ç°¼àÌı½Ó¿ÚÎªTCP $port"
+# ç›‘å¬ç«¯å£
+$port = Read-Host -Prompt "è¯·è¾“å…¥ç›‘å¬çš„TCPç«¯å£"
+Write-Host "å½“å‰ç›‘å¬æ¥å£ä¸ºTCP $port"
 
-# »ñÈ¡±¾»úIPv4µØÖ·
+# è·å–æœ¬æœºIPv4åœ°å€
 $ipAddresses = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notlike 'Loopback*' }).IPAddress
-Write-Host "µ±Ç°µçÄÔµÄ IP µØÖ·ÊÇ£º$ipAddresses"
+Write-Host "å½“å‰ç”µè„‘çš„ IP åœ°å€æ˜¯ï¼š$ipAddresses"
 
-# ´´½¨ TcpListener ¶ÔÏó²¢¿ªÊ¼¼àÌı
+# åˆ›å»º TcpListener å¯¹è±¡å¹¶å¼€å§‹ç›‘å¬
 $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Any, $port)
 $listener.Start()
 
-# µÈ´ı¿Í»§¶ËÁ¬½Ó
-Write-Host "µÈ´ı¿Í»§¶ËÁ¬½Ó..."
+# ç­‰å¾…å®¢æˆ·ç«¯è¿æ¥
+Write-Host "ç­‰å¾…å®¢æˆ·ç«¯è¿æ¥..."
 
 try {
     while ($true) {
-        # ½ÓÊÜ¿Í»§¶ËÁ¬½Ó²¢»ñÈ¡¿Í»§¶ËµÄÍøÂçÁ÷¶ÔÏó
+        # æ¥å—å®¢æˆ·ç«¯è¿æ¥å¹¶è·å–å®¢æˆ·ç«¯çš„ç½‘ç»œæµå¯¹è±¡
         $client = $listener.AcceptTcpClient()
         $stream = $client.GetStream()
 
-        # »ñÈ¡¿Í»§¶ËµÄ IP µØÖ·
+        # è·å–å®¢æˆ·ç«¯çš„ IP åœ°å€
         $clientIP = $client.Client.RemoteEndPoint.Address
-        Write-Host "¿Í»§¶Ë $clientIP Á¬½Ó³É¹¦"
+        Write-Host "å®¢æˆ·ç«¯ $clientIP è¿æ¥æˆåŠŸ"
 
-        # Ñ­»·½ÓÊÕ¿Í»§¶Ë·¢ËÍµÄÊı¾İ
+        # å¾ªç¯æ¥æ”¶å®¢æˆ·ç«¯å‘é€çš„æ•°æ®
         while ($true) {
-            # ½ÓÊÕ¿Í»§¶Ë·¢ËÍµÄÊı¾İ
+            # æ¥æ”¶å®¢æˆ·ç«¯å‘é€çš„æ•°æ®
             $bufferSize = 1024
             $buffer = New-Object byte[] $bufferSize
             $bytesRead = $stream.Read($buffer, 0, $bufferSize)
-            $data = [System.Text.Encoding]::UTF8.GetString($buffer, 0, $bytesRead)
-            Write-Host "½ÓÊÕµ½¿Í»§¶Ë·¢ËÍµÄÊı¾İ£º$data"
+            $data = [System.Text.Encoding]::ASCII.GetString($buffer, 0, $bytesRead)
+            Write-Host "æ¥æ”¶åˆ°å®¢æˆ·ç«¯å‘é€çš„æ•°æ®ï¼š$data"
 
-            # »Ø¸´¿Í»§¶Ë
-            $response = "ÒÑ½ÓÊÕµ½Êı¾İ£º$data"
-            $responseBuffer = [System.Text.Encoding]::UTF8.GetBytes($response)
+            # å›å¤å®¢æˆ·ç«¯
+            $response = "å·²æ¥æ”¶åˆ°æ•°æ®ï¼š$data"
+            $responseBuffer = [System.Text.Encoding]::ASCII.GetBytes($response)
             $stream.Write($responseBuffer, 0, $responseBuffer.Length)
             $stream.Flush()
 
-            # Èç¹û¿Í»§¶Ë·¢ËÍµÄÊı¾İÎª "exit" »ò "quit"£¬Ôò¶Ï¿ª¿Í»§¶ËÁ¬½Ó
+            # å¦‚æœå®¢æˆ·ç«¯å‘é€çš„æ•°æ®ä¸º "exit" æˆ– "quit"ï¼Œåˆ™æ–­å¼€å®¢æˆ·ç«¯è¿æ¥
             if ($data.ToLower().Trim() -eq "exit" -or $data.ToLower().Trim() -eq "quit") {
                 $client.Close()
-                Write-Host "¿Í»§¶Ë $clientIP Á¬½ÓÒÑ¶Ï¿ª"
+                Write-Host "å®¢æˆ·ç«¯ $clientIP è¿æ¥å·²æ–­å¼€"
                 break
             }
         }
     }
 }
 finally {
-    # ¹Ø±Õ¼àÌıÆ÷ºÍÁ÷
+    # å…³é—­ç›‘å¬å™¨å’Œæµ
     $listener.Stop()
     $stream.Dispose()
     $client.Close()
-    Read-Host "Çë°´ÈÎÒâ¼üÍË³ö³ÌĞò..."
+    Read-Host "è¯·æŒ‰ä»»æ„é”®é€€å‡ºç¨‹åº..."
 }
