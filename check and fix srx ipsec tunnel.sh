@@ -28,37 +28,28 @@ function send_alarm() {
 }
 
 
-
+MAX_RETRIES=3
+retry_count=0
 ipsec_status=$(get_ipsec_status)  # 获取 ipsec_status
 
-if [ "$ipsec_status" -eq 0 ]; then
-
-    echo "$(date)  尝试修复工作"
-    fix_ipsec
-    sleep 150  # 等待修复工作完成
-
-    # 第二次检测 ipsec_status
-    ipsec_status=$(get_ipsec_status)
-
-    if [ "$ipsec_status" -eq 0 ]; then
-        sleep 1800
-        echo "$(date)  尝试第二次修复工作"
-        fix_ipsec
-        sleep 150
-        ipsec_status=$(get_ipsec_status)
-        if [ "$ipsec_status" -eq 0 ]; then
-            echo "$(date) 修复失败，发送通知动作"
-            send_alarm
-            break
-        fi
-    else
-        echo "$(date)  ipsec 恢复正常"
+while [ "$ipsec_status" -eq 0 ]; do
+    if [ "$retry_count" -eq "$MAX_RETRIES" ]; then
+        echo "$(date) $MAX_RETRIES 次修复尝试均失败，发送通知动作"
+        send_alarm
+        break
     fi
 
-elif [ "$ipsec_status" -eq 1 ]; then
+    retry_count=$((retry_count+1))
+    echo "$(date)  尝试修复工作 (第 $retry_count 次)"
+    fix_ipsec
+    sleep 150  # 等待修复工作完成
+    ipsec_status=$(get_ipsec_status)
+    
+done
+
+if [ "$ipsec_status" -eq 1 ]; then
     # 运行正常
     echo "$(date) ipsec 运行正常"
-
 else
     # 其他状态，发送通知
     echo "$(date) IPSec 状态异常，发送通知"
