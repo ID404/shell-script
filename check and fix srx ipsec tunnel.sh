@@ -9,6 +9,7 @@ get_IP_url="http://myip.ipip.net"
 ssh_port=1234
 ssh_user=id404
 alarm_url="https://api.day.app/XXXXXXX/hxyy/hxyy_ipsec_down"
+ike_gateway_name=ike_gateway
 
 hxyy_ip=$(wget -q -O - $webagent_url | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
 myip=$(curl $get_IP_url | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
@@ -20,8 +21,8 @@ function get_ipsec_status() {
 function fix_ipsec() {
     ssh -o StrictHostKeyChecking=no -p $ssh_port $ssh_user@$hxyy_ip << EOF
     configure
-    delete security ike gateway company address
-    set security ike gateway company address $myip
+    delete security ike gateway $ike_gateway_name address
+    set security ike gateway $ike_gateway_name address $myip
     commit comment commit_by_shell_on_docker
     exit
     exit
