@@ -4,16 +4,21 @@
 #运行程序的机器需配置私钥登陆srx
 #本程序可根据检查频率在定时任务里定时执行
 
-hxyy_ip=$(wget -q -O - "http://webagent.sangfor.net.cn/webagent/wlan/XXXXX.php?devtype=ap&opt=get_ip" | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
+webagen_url="http://webagent.sangfor.net.cn/webagent/wlan/XXXXX.php?devtype=ap&opt=get_ip"
+get_IP_url="http://myip.ipip.net"
+ssh_port=1234
+ssh_user=id404
+alarm_url="https://api.day.app/XXXXXXX/hxyy/hxyy_ipsec_down"
 
-myip=$(curl http://myip.ipip.net | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
+hxyy_ip=$(wget -q -O - $webagent_url | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
+myip=$(curl $get_IP_url | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
 
 function get_ipsec_status() {
-    ssh -o StrictHostKeyChecking=no -p 1234 id404@$hxyy_ip "show sec ipsec se" | grep tunnels | awk {'print $4'}
+    ssh -o StrictHostKeyChecking=no -p $ssh_port $ssh_user@$hxyy_ip "show sec ipsec se" | grep tunnels | awk {'print $4'}
 }
 
 function fix_ipsec() {
-    ssh -o StrictHostKeyChecking=no -p 1234 id404@$hxyy_ip << EOF
+    ssh -o StrictHostKeyChecking=no -p $ssh_port $ssh_user@$hxyy_ip << EOF
     configure
     delete security ike gateway company address
     set security ike gateway company address $myip
@@ -24,7 +29,7 @@ EOF
 }
 
 function send_alarm() {
-    curl https://api.day.app/XXXXXXX/hxyy/hxyy_ipsec_down
+    curl $alarm_url
 }
 
 
