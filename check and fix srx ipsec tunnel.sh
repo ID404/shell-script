@@ -4,7 +4,7 @@
 #运行程序的机器需配置私钥登陆srx
 #本程序可根据检查频率在定时任务里定时执行
 
-webagen_url="http://webagent.sangfor.net.cn/webagent/wlan/XXXXX.php?devtype=ap&opt=get_ip"
+webagent_url="http://webagent.sangfor.net.cn/webagent/wlan/XXXXX.php?devtype=ap&opt=get_ip"
 get_IP_url="http://myip.ipip.net"
 ssh_port=1234
 ssh_user=id404
