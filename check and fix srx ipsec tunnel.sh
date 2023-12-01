@@ -10,12 +10,15 @@ ssh_port=1234
 ssh_user=id404
 alarm_url="https://api.day.app/XXXXXXX/hxyy/hxyy_ipsec_down"
 ike_gateway_name=ike_gateway
+ipsec_gateway_name=fedi
+
+
 
 hxyy_ip=$(wget -q -O - $webagent_url | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
 myip=$(curl $get_IP_url | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
 
 function get_ipsec_status() {
-    ssh -o StrictHostKeyChecking=no -p $ssh_port $ssh_user@$hxyy_ip "show sec ipsec se" | grep tunnels | awk {'print $4'}
+    ssh -o StrictHostKeyChecking=no -p $ssh_port $ssh_user@$hxyy_ip "show security ipsec security-associations detail" | grep $ipsec_gateway_name 
 }
 
 function fix_ipsec() {
@@ -38,7 +41,7 @@ MAX_RETRIES=3
 retry_count=0
 ipsec_status=$(get_ipsec_status)  # 获取 ipsec_status
 
-while [ "$ipsec_status" -eq 0 ]; do
+while [ -z "$ipsec_status" ]; do
     if [ "$retry_count" -eq "$MAX_RETRIES" ]; then
         echo "$(date) $MAX_RETRIES 次修复尝试均失败，发送通知动作"
         send_alarm
@@ -53,7 +56,7 @@ while [ "$ipsec_status" -eq 0 ]; do
     
 done
 
-if [ "$ipsec_status" -eq 1 ]; then
+if [ -n "$ipsec_status"  ]; then
     # 运行正常
     echo "$(date) ipsec 运行正常"
 else
