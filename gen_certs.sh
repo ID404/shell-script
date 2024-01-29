@@ -81,6 +81,20 @@ function revoke_user_cert() {
     exit 1
 }
 
+
+# 遍历目录名
+for dir in "${dirs[@]}"
+do
+    # 如果目录不存在，则创建它
+    if [[ ! -d $dir ]]; then
+        echo "Directory $dir does not exist. Creating now..."
+        mkdir $dir
+        echo "Directory $dir created."
+    else
+        echo "Directory $dir exists."
+    fi
+done
+
 PS3='Please enter your choice: '
 
 options=("Generate CA Certificate" "Generate Server Certificate" "Generate User Certificate" "Revoke User Certificate" "Quit")
