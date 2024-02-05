@@ -1,0 +1,6 @@
+outline/outline v0.74.0
+MetaCubeX/mihomo v1.18.1
+keycloak/keycloak 23.0.6
+bjdgyc/anylink v0.11.1
+apernet/hysteria app/v2.2.4
+IrineSistiana/mosdns-cn v1.4.0
