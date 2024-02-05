@@ -15,7 +15,7 @@ function getLatestRelease {
   local repo_name=$1
   local response=$(curl -s --write-out "%{http_code}" --silent --output /dev/null "https://api.github.com/repos/$repo_name/releases/latest")
   if [ "$response" -ne 200 ]; then
-    echo "获取 ${repo_name} 最新版本失败。错误代码：$response"
+    echo "$(date) 获取 ${repo_name} 最新版本失败。错误代码：$response"
     curl -s "${alarm_url}${rep_name}/最新版本失败。错误代码：$response"
     return 1
   else
@@ -31,21 +31,24 @@ while IFS= read -r line || [ -n "$line" ]; do
   repo_name=$(echo $line | cut -d ' ' -f 1)
   current_version=$(echo $line | cut -d ' ' -f 2)
 
-  echo "检查 ${repo_name} ..."
+  echo "$(date) 检查 ${repo_name} ..."
 
   # 获取最新的 release 版本
   latest_release=$(getLatestRelease $repo_name)
 
   # 当前版本和最新 release 版本进行比较
   if [ "$current_version" != "$latest_release" ]; then
-    echo "${repo_name} 的版本更新了。"
+    echo "$(date) ${repo_name} 的版本更新了。"
     # 发送通知
     sendNotification $repo_name $latest_release
     # 更新 repos.txt 的版本号为最新
     sed -i "s#$repo_name $current_version#$repo_name $latest_release#" repos.txt
   else
-    echo "${repo_name} 没有版本更新。"
+    echo "$(date) ${repo_name} 没有版本更新。"
   fi
 done < repos.txt
+
+
+
 
 
