@@ -5,6 +5,8 @@
 #yum install firefox
 #同时需要下载geckodriver   下载地址 https://github.com/mozilla/geckodriver/releases
 #geckodriver需要放在/usr/bin/ 下
+#也可以使用配置好环境的docker 镜像运行docker run --rm -ti --shm-size 1g -v /opt/hxyy:/data nowsci/selenium /data/hxyy_reset_log_center.py
+
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
