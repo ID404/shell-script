@@ -9,7 +9,7 @@ alarm_url="https://api.day.app/Rf77gV/MSR3620/MSR3620_ipsec_down"
 
 
 function get_ipsec_status() {
-    sshpass -p $ssh_pass ssh -o TCPKeepAlive=yes -o ServerAliveInterval=60 -p $ssh_port $ssh_user@$ssh_IP 'dis ipsec sa brief' | grep -a Active
+    sshpass -p $ssh_pass ssh -o StrictHostKeyChecking=no -p $ssh_port $ssh_user@$ssh_IP 'dis ipsec sa brief' | grep -a Active
 }
 
 
