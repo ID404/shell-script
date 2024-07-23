@@ -42,9 +42,22 @@ function internet_check(){
     fi
 }
 
+# 检测sshpass命令是否存在
+function sshpass_check(){
+    if command -v sshpass &> /dev/null
+    then
+        return 1
+    else
+        echo "$(date) sshpass未安装,请先安装sshpass,程序将退出"
+        exit 1
+    fi
+}
+
+
 
 
 echo "$(date) 程序开始运行"
+sshpass_check
 internet_check
 internet_status=$?
 
