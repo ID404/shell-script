@@ -6,7 +6,8 @@ ssh_pass=123456
 ssh_IP=1.1.1.1
 alarm_url="https://api.day.app/Rf77gV/MSR3620/MSR3620_ipsec_down"
 
-
+#检测联网测试IP,可写多个
+ip_addresses=("223.5.5.5" "114.114.114.114" "202.96.128.86" "202.96.128.166")
 
 function get_ipsec_status() {
     sshpass -p $ssh_pass ssh -o StrictHostKeyChecking=no -p $ssh_port $ssh_user@$ssh_IP 'dis ipsec sa brief' | grep -a Active
@@ -20,8 +21,6 @@ function send_alarm() {
 
 #网络连接异常的判定为全部IP测试失败
 function internet_check(){
-    #测试IP,可写多个
-    ip_addresses=("223.5.5.5" "114.114.114.114" "202.96.128.86" "202.96.128.166")
     ping_failed_time=0
     ip_num=${#ip_addresses[@]}
     for ip in "${ip_addresses[@]}"; do
