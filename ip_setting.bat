@@ -1,4 +1,15 @@
 @echo off
+
+:: 检查是否已以管理员身份运行
+net session >nul 2>&1
+if %errorLevel% == 0 (
+    echo 已以管理员身份运行
+) else (
+    echo 请求管理员权限
+    powershell -Command "Start-Process '%~f0' -Verb runAs"
+    exit /b
+)
+
 goto menu1
  
 :menu1
