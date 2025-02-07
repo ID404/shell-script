@@ -20,14 +20,14 @@ goto menu1
 @echo                             1.设置无线网卡
 @echo                             2.设置vEthernet
 @echo                             3.设置有线网卡
-@echo                             4.设置无线网卡D-link
+@echo                             4.
 @echo                             5.手动输入网卡名
 @echo.
 @echo                ========================================
 @echo.
 @echo                        默认设置无线网卡[直接回车]
 @echo.                               
-@echo                        请选择[1、2、3、4、5]
+@echo                        请选择[1、2、3……]
 
 set num=1
 set /p num=
@@ -72,12 +72,15 @@ exit
 @echo                          1. 自动获取ip地址
 @echo                          2. 修改ip为192.168.0.128
 @echo                          3. 手动输入ip地址
+@echo                          4. 手动输入ip地址 (无网关、DNS)
+@echo                          5. 手动设置DNS
+@echo                          6. 自动获取DNS
 @echo.
 @echo                ========================================
 @echo. 
 @echo                      默认修改ip为自动获取[直接回车]
 @echo.
-@echo                      请选择[1、2、3]
+@echo                      请选择[1、2、3……]
  
 set selc=1
 set /p selc=
@@ -88,6 +91,9 @@ set /p selc=
 IF %selc%==1 goto DHCP
 IF %selc%==2 goto ipstatic 
 IF %selc%==3 goto ipsetting
+IF %selc%==4 goto ipsetting2
+IF %selc%==5 goto DNS
+IF %selc%==6 goto DNS2
 IF %selc% NEQ 2 goto err2
 exit
  
@@ -102,6 +108,10 @@ exit
 :DHCP
 @echo.
 @echo 自动获取ip地址
+netsh interface ip set address "%inter%" static 1.1.1.1 255.255.255.0 1.1.1.2 1
+netsh interface ip set dns name="%inter%" source=static 1.1.1.2
+netsh int ip add dns name="%inter%" 1.1.1.3 index=2
+
 netsh int ip set add name="%inter%" source=dhcp
 @echo 自动获取DNS服务器
 netsh int ip set dns name="%inter%" source=dhcp
@@ -149,6 +159,63 @@ netsh interface ip set dns name="%inter%" source=static %DNS1%
 netsh int ip add dns name="%inter%" %DNS2% index=2
  
 @echo ip地址设置完毕
+@echo.
+@echo.
+@pause
+exit
+
+
+
+
+:ipsetting2
+@echo 正在设置固定ip,请稍候……
+@echo.
+@echo 请输入ip地址：
+set /p ip=
+@echo.
+@echo.
+@echo.
+netsh interface ip set address "%inter%" static %ip% 255.255.255.0 none
+
+
+ 
+@echo ip地址设置完毕
+@echo.
+@echo.
+@pause
+exit
+
+
+
+
+:DNS
+@echo 请输入首选DNS：
+set /p DNS1=
+@echo.
+@echo.
+@echo 请输入备用DNS：
+set /p DNS2=
+
+netsh interface ip set dns name="%inter%" source=static %DNS1%
+netsh int ip add dns name="%inter%" %DNS2% index=2
+
+
+ 
+@echo DNS设置完毕
+@echo.
+@echo.
+@pause
+exit
+
+
+
+
+
+:DNS2
+@echo 自动获取DNS服务器
+netsh int ip set dns name="%inter%" source=dhcp
+ 
+@echo DNS设置完毕
 @echo.
 @echo.
 @pause
